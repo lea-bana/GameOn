@@ -14,6 +14,8 @@ const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
 const closeBtn = document.querySelectorAll(".close");
 const submitBtn = document.querySelector(".btn-submit");
+
+//DOM Elements for each inputs
 const inputName = document.getElementById("first");
 const inputLastName = document.getElementById("last");
 const inputEmail = document.getElementById("email");
@@ -55,7 +57,7 @@ signInForm.addEventListener("submit", checkform);
 
 //FUNCTIONS
 
-// close modal form &
+// close modal form
 closeBtn.forEach((btn) => btn.addEventListener("click", closeModal));
 
 // launch modal form & modal Confirmation
@@ -67,7 +69,7 @@ function launchModal() {
   modalbg.style.display = "block";
 }
 
-//closeModal
+//closeModal form & Confirmation
 function closeModal(event) {
   let modal = event.target.closest(".bground");
   modal.style.display = "none";
@@ -87,7 +89,8 @@ function showErrorMessage(target, errorMessage) {
   }
 }
 
-/** */
+//function to hide the error message
+
 function hideErrorMessage(target) {
   let divError = target.querySelector(".errorMessage");
   if (divError) {
@@ -95,15 +98,21 @@ function hideErrorMessage(target) {
   }
 }
 
+//function to show the red border's input when an error occured
+
 function showInputError(target) {
   target.classList.add("borderError");
 }
+
+//function to hide the red border's input when it's ok
 
 function hideInputError(target) {
   target.classList.remove("borderError");
 }
 
 //IMPLEMENT FORM DATAS
+
+// function to test if the name and the lastname are less than 2 characters
 
 function testInputText(input) {
   let value = input.value;
@@ -124,7 +133,8 @@ function testInputText(input) {
   }
 }
 
-//champ email - regexp
+//function to test, if email doesn't correspond to regexp -> error
+
 function testInputEmail(input) {
   let value = input.value;
   let parent = input.parentNode;
@@ -140,10 +150,9 @@ function testInputEmail(input) {
   }
 }
 
-/** */
+// function to test, if birhtdate  doesn't correspond to regexp => error
 
 function testInputBirthdate(input) {
-  let value = input.value;
   let parent = input.parentNode;
   if (regexBirth.test(input.value) == false) {
     showErrorMessage(parent, "Veuillez entrer votre date de naissance");
@@ -156,7 +165,7 @@ function testInputBirthdate(input) {
   }
 }
 
-/** */
+// funciton to test, if this input.value is empty or its value is not a number => error
 
 function testInputQuantity(input) {
   let value = input.value;
@@ -174,6 +183,8 @@ function testInputQuantity(input) {
     return true;
   }
 }
+
+//if one of the option is not checked => error
 
 function testInputLocation(input) {
   let isChecked = false;
@@ -198,9 +209,10 @@ function testInputLocation(input) {
   }
 }
 
+//if the checkbox conditions is not checked => error
+
 function testInputConditions(input) {
   let isChecked = true;
-  let value = input.value;
   let parent = input.parentNode;
 
   if (!input.checked) {
@@ -214,10 +226,10 @@ function testInputConditions(input) {
     return true;
   }
 }
-/** */
+// function called at form submit event
 
 function checkform(event) {
-  event.preventDefault();
+  event.preventDefault(); // default behavior of submit event is avoided
   let isError = false;
 
   if (!testInputText(inputName)) {
@@ -248,7 +260,7 @@ function checkform(event) {
   if (isError == true) {
     console.log("erreurs");
   } else {
-    console.log("c'est bon");
+    console.log("OK"); //all inputs must be true (isError=false) so the form can be submitted correctly
     modalbg.style.display = "none";
     modalOk.style.display = "block";
   }
