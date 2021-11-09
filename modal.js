@@ -178,7 +178,7 @@ function testInputQuantity(input) {
   }
 }
 
-/*if quantity.value > 0 and one of the option is not checked => error
+/*function to test if quantity.value > 0 and one of the radio btn option is not checked => error
 Or if quantity.value = 0 no option needs to be checked*/
 
 function testInputRadio(input, expectedValue) {
@@ -237,7 +237,8 @@ function checkform(event) {
     isError = true;
   }
 
-  /**if */
+  /**if quantity.value > 0 and one of the option is not checked => error
+Or if quantity.value = 0 no option needs to be checked  */
   let expectedValue = false;
   if (inputQuantity.value > 0) {
     expectedValue = true;
