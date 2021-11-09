@@ -79,7 +79,6 @@ function closeModal(event) {
 
 function showErrorMessage(target, errorMessage) {
   let divError = target.querySelector(".errorMessage");
-  console.log(target.childNodes);
 
   if (!divError) {
     divError = document.createElement("div");
@@ -118,7 +117,6 @@ function testInputText(input) {
   let value = input.value;
   let parent = input.parentNode;
   if (value.length < 2) {
-    console.log("trop petit");
     showErrorMessage(
       parent,
       "Veuillez entrer 2 caractères ou plus pour ce champ."
@@ -126,7 +124,6 @@ function testInputText(input) {
     showInputError(input);
     return false;
   } else {
-    console.log("ok");
     hideErrorMessage(parent);
     hideInputError(input);
     return true;
@@ -165,46 +162,40 @@ function testInputBirthdate(input) {
   }
 }
 
-// funciton to test, if this input.value is empty or its value is not a number => error
+// function to test, if this input.value is empty or its value is not a number => error
 
 function testInputQuantity(input) {
   let value = input.value;
   let parent = input.parentNode;
-  console.log(value);
   if (value === "" || isNaN(quantity.value)) {
-    console.log("no");
     showErrorMessage(parent, "Veuillez entrer un nombre");
     showInputError(input);
     return false;
   } else {
-    console.log("ok");
     hideErrorMessage(parent);
     hideInputError(input);
     return true;
   }
 }
 
-//if one of the option is not checked => error
+/*if quantity.value > 0 and one of the option is not checked => error
+Or if quantity.value = 0 no option needs to be checked*/
 
-function testInputLocation(input) {
+function testInputRadio(input, expectedValue) {
+  let parent = input[0].parentNode;
   let isChecked = false;
-  console.log(input);
-  if (
-    inputCheckLocation[0].checked ||
-    inputCheckLocation[1].checked ||
-    inputCheckLocation[2].checked ||
-    inputCheckLocation[3].checked ||
-    inputCheckLocation[4].checked ||
-    inputCheckLocation[5].checked
-  ) {
-    hideErrorMessage(input[0]);
-    console.log("ok");
-    isChecked = true;
+  for (let index = 0; index < input.length; index++) {
+    const currentInput = input[index];
+    if (currentInput.checked) {
+      isChecked = true;
+      break;
+    }
+  }
+  if (isChecked == expectedValue) {
+    hideErrorMessage(parent);
     return true;
   } else {
-    console.log("no");
-    showErrorMessage(input[0], "Veuillez choisir une option");
-    console.log(input);
+    showErrorMessage(parent, "Veuillez choisir une option");
     return false;
   }
 }
@@ -212,7 +203,6 @@ function testInputLocation(input) {
 //if the checkbox conditions is not checked => error
 
 function testInputConditions(input) {
-  let isChecked = true;
   let parent = input.parentNode;
 
   if (!input.checked) {
@@ -220,7 +210,6 @@ function testInputConditions(input) {
     showInputError(input);
     return false;
   } else {
-    isChecked = true;
     hideErrorMessage(parent);
     hideInputError(input);
     return true;
@@ -248,17 +237,21 @@ function checkform(event) {
     isError = true;
   }
 
-  if (!testInputLocation(inputCheckLocation)) {
+  /**if */
+  let expectedValue = false;
+  if (inputQuantity.value > 0) {
+    expectedValue = true;
+  }
+  if (!testInputRadio(inputCheckLocation, expectedValue)) {
     isError = true;
   }
 
   if (!testInputConditions(inputCheckbox1)) {
     isError = true;
-    console.log(isError);
   }
 
   if (isError == true) {
-    console.log("erreurs");
+    console.log("erreur(s) dans le formulaire");
   } else {
     console.log("OK"); //all inputs must be true (isError=false) so the form can be submitted correctly
     modalbg.style.display = "none";
