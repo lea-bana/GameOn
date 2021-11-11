@@ -23,8 +23,9 @@ const inputBirthdate = document.getElementById("birthdate");
 const inputQuantity = document.getElementById("quantity");
 const inputCheckbox1 = document.getElementById("checkbox1");
 const signInForm = document.getElementById("signinform");
-const inputCheckLocation = document.getElementsByName("location");
+const inputCheckLocation = document.querySelectorAll("input[name*='location']");
 
+console.log(signInForm);
 //UTILS / REGEXP / VAR
 
 const regexBirth = new RegExp("([0-9]{4})-([0-9]{2})-([0-9]{2})");
@@ -52,28 +53,33 @@ inputBirthdate.addEventListener("focusout", (event) => {
 inputQuantity.addEventListener("focusout", (event) => {
   testInputQuantity(event.target);
 });
+inputQuantity.addEventListener("click", (event) => {
+  if (event.target.value > 1) {
+    for (let idx = 0; idx < inputCheckLocation.length; idx++) {
+      inputCheckLocation[idx].name = "location" + idx;
+    }
+  }
+});
 
 signInForm.addEventListener("submit", checkform);
 
 //FUNCTIONS
 
-// close modal form
+// function launch modal
+function launchModal() {
+  modalbg.style.display = "block";
+}
+//function closeModal
+function closeModal(event) {
+  let modal = event.target.closest(".bground");
+  modal.style.display = "none";
+}
+// close modal form & Confirmation
 closeBtn.forEach((btn) => btn.addEventListener("click", closeModal));
 
 // launch modal form & modal Confirmation
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 submitBtn.addEventListener("click", launchModal);
-
-// launch modal
-function launchModal() {
-  modalbg.style.display = "block";
-}
-
-//closeModal form & Confirmation
-function closeModal(event) {
-  let modal = event.target.closest(".bground");
-  modal.style.display = "none";
-}
 
 //function to show the error message on the event's target
 
@@ -179,7 +185,8 @@ function testInputQuantity(input) {
 }
 
 /*function to test if quantity.value > 0 and one of the radio btn option is not checked => error
-Or if quantity.value = 0 no option needs to be checked*/
+Or if quantity.value = 0 no option needs to be checked
+Or if quantity.value >1 more options can be checked*/
 
 function testInputRadio(input, expectedValue) {
   let parent = input[0].parentNode;
@@ -195,7 +202,7 @@ function testInputRadio(input, expectedValue) {
     hideErrorMessage(parent);
     return true;
   } else {
-    showErrorMessage(parent, "Veuillez choisir une option");
+    showErrorMessage(parent, "Veuillez choisir une ou plusieurs options");
     return false;
   }
 }
@@ -207,18 +214,25 @@ function testInputConditions(input) {
 
   if (!input.checked) {
     showErrorMessage(parent, "Veuillez accepter les conditions d'utilisation");
-    showInputError(input);
     return false;
   } else {
     hideErrorMessage(parent);
-    hideInputError(input);
     return true;
+  }
+}
+
+// Function to hide and show an element
+function hideOrShowElement(element) {
+  if (element.style.display == "block") {
+    element.style.display = "none";
+  } else {
+    element.style.display = "block";
   }
 }
 // function called at form submit event
 
 function checkform(event) {
-  event.preventDefault(); // default behavior of submit event is avoided
+  event.preventDefault();
   let isError = false;
 
   if (!testInputText(inputName)) {
@@ -252,10 +266,26 @@ Or if quantity.value = 0 no option needs to be checked  */
   }
 
   if (isError == true) {
+    //event.preventDefault(); // default behavior of submit event is avoided if form can't be submitted correctly
     console.log("erreur(s) dans le formulaire");
   } else {
     console.log("OK"); //all inputs must be true (isError=false) so the form can be submitted correctly
-    modalbg.style.display = "none";
-    modalOk.style.display = "block";
+    console.log(signInForm);
+    razForm(signInForm);
+    hideOrShowElement(modalbg);
+    hideOrShowElement(modalOk);
+  }
+}
+
+//Remettre a zéro les champs d'un formulaire reçu en paramétre.
+//@params : un tableau d'élément html input
+function razForm(tab) {
+  for (let idx = 0; idx < tab.length; idx++) {
+    if (tab[idx].type === "checkbox" || tab[idx].type === "radio") {
+      tab[idx].checked = false;
+    } else {
+      console.log("heyhey", tab[idx]);
+      tab[idx].value = "";
+    }
   }
 }
